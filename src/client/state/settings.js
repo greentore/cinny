@@ -25,6 +25,7 @@ class Settings extends EventEmitter {
 
     this.useSystemTheme = this.getUseSystemTheme();
     this.isMarkdown = this.getIsMarkdown();
+    this.isGreentext = this.getIsGreentext();
     this.isPeopleDrawer = this.getIsPeopleDrawer();
     this.hideMembershipEvents = this.getHideMembershipEvents();
     this.hideNickAvatarEvents = this.getHideNickAvatarEvents();
@@ -97,6 +98,15 @@ class Settings extends EventEmitter {
     return settings.isMarkdown;
   }
 
+  getIsGreentext() {
+    if (typeof this.isGreentext === 'boolean') return this.isGreentext;
+
+    const settings = getSettings();
+    if (settings === null) return true;
+    if (typeof settings.isGreentext === 'undefined') return true;
+    return settings.isGreentext;
+  }
+
   getHideMembershipEvents() {
     if (typeof this.hideMembershipEvents === 'boolean') return this.hideMembershipEvents;
 
@@ -156,6 +166,11 @@ class Settings extends EventEmitter {
         this.isMarkdown = !this.isMarkdown;
         setSettings('isMarkdown', this.isMarkdown);
         this.emit(cons.events.settings.MARKDOWN_TOGGLED, this.isMarkdown);
+      },
+      [cons.actions.settings.TOGGLE_GREENTEXT]: () => {
+        this.isGreentext = !this.isGreentext;
+        setSettings('isGreentext', this.isGreentext);
+        this.emit(cons.events.settings.GREENTEXT_TOGGLED, this.isGreentext);
       },
       [cons.actions.settings.TOGGLE_PEOPLE_DRAWER]: () => {
         this.isPeopleDrawer = !this.isPeopleDrawer;

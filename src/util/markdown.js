@@ -2,6 +2,7 @@
 /* eslint-disable no-use-before-define */
 import SimpleMarkdown from '@khanacademy/simple-markdown';
 import { idRegex, parseIdUri } from './common';
+import settings from '../client/state/settings';
 
 const {
   defaultRules, parserFor, outputFor, anyScopeRegex, blockRegex, inlineRegex,
@@ -492,24 +493,80 @@ function render(content, state, plainOut, htmlOut) {
   };
 }
 
-const plainParser = parserFor(plainRules);
-const plainPlainOut = outputFor(plainRules, 'plain');
-const plainHtmlOut = outputFor(plainRules, 'html');
+const pl = {};
+const md = {};
 
-const mdParser = parserFor(markdownRules);
-const mdPlainOut = outputFor(markdownRules, 'plain');
-const mdHtmlOut = outputFor(markdownRules, 'html');
+function initMarkdown(plainRules, markdownRules) {
+  pl.parser = parserFor(plainRules);
+  pl.plainOut = outputFor(plainRules, 'plain');
+  pl.htmlOut = outputFor(plainRules, 'html');
+
+  md.parser = parserFor(markdownRules);
+  md.plainOut = outputFor(markdownRules, 'plain');
+  md.htmlOut = outputFor(markdownRules, 'html');
+}
+
+/** Borrowed from simple-markdown. */
+const LIST_LOOKBEHIND_R = /(?:^|\n)( *)$/;
+
+function applyGreentextRules(_plainRules, markdownRules) {
+  if (!settings.isGreentext) {
+    return;
+  }
+
+  markdownRules.greentext = {
+    order: defaultRules.blockQuote.order - 0.5,
+    match: (source, state) => {
+      const prevCaptureStr =
+        state.prevCapture === null ? '' : state.prevCapture[0];
+      const isStartOfLineCapture = LIST_LOOKBEHIND_R.exec(prevCaptureStr);
+
+      if (state.inline && isStartOfLineCapture) {
+        return /^>(?![> ]).*/.exec(source);
+      } else {
+        return null;
+      }
+    },
+    parse: (capture, parse, state) => {
+      const clean = capture[0].replace('>', '');
+      const content = parse(clean, state);
+      return { content };
+    },
+    html: (node, output) => `<font color='#789902'>&gt;${output(node.content)}</font>`,
+    plain: (node, output, state) => `>${output(node.content, state)}`,
+  }
+  markdownRules.blockQuote = {
+    ...markdownRules.blockQuote,
+    match: blockRegex(/^( *> [^\n]+(\n[^\n]+)*\n*)+\n{2,}/),
+  }
+}
+
+const rulePatches = [
+  applyGreentextRules,
+]
+
+function extendRules() {
+  const extPlainRules = { ...plainRules }
+  const extMarkdownRules = { ...markdownRules }
+  for (const rulePatch of rulePatches) {
+    rulePatch(extPlainRules, extMarkdownRules);
+  }
+  initMarkdown(extPlainRules, extMarkdownRules)
+}
+
+settings.on("GREENTEXT_TOGGLED", extendRules);
+extendRules();
 
 export function plain(source, state) {
-  return render(plainParser(source, state), state, plainPlainOut, plainHtmlOut);
+  return render(pl.parser(source, state), state, pl.plainOut, pl.htmlOut);
 }
 
 export function markdown(source, state) {
-  return render(mdParser(source, state), state, mdPlainOut, mdHtmlOut);
+  return render(md.parser(source, state), state, md.plainOut, md.htmlOut);
 }
 
 export function html(source, state) {
   const el = document.createElement('template');
   el.innerHTML = source;
-  return render(mapChildren(el.content), state, mdPlainOut, mdHtmlOut);
+  return render(mapChildren(el.content), state, md.plainOut, md.htmlOut);
 }
