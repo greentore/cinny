@@ -13,6 +13,7 @@ const cons = {
     DIRECTS: 'dm',
   },
   supportEventTypes: ['m.room.create', 'm.room.message', 'm.room.encrypted', 'm.room.member', 'm.sticker'],
+  supportedReceiptTypes: ['m.read', 'm.read.private'],
   notifs: {
     DEFAULT: 'default',
     ALL_MESSAGES: 'all_messages',
