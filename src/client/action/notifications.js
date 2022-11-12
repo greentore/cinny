@@ -28,6 +28,6 @@ export async function markAsRead(roomId) {
   const latestEvent = getLatestValidEvent();
   if (latestEvent === null) return;
 
-  const receiptType = settings.getSendReadReceipts() ? ReceiptType.Read : ReceiptType.ReadPrivate;
+  const receiptType = settings.sendReadReceipts ? ReceiptType.Read : ReceiptType.ReadPrivate;
   await mx.sendReadReceipt(latestEvent, receiptType);
 }

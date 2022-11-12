@@ -30,6 +30,7 @@ class Settings extends EventEmitter {
     this.hideNickAvatarEvents = this.getHideNickAvatarEvents();
     this._showNotifications = this.getShowNotifications();
     this.isNotificationSounds = this.getIsNotificationSounds();
+    this.sendReadReceipts = this.getSendReadReceipts();
 
     this.isTouchScreenDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
   }
@@ -147,6 +148,15 @@ class Settings extends EventEmitter {
     return settings.isNotificationSounds;
   }
 
+  getSendReadReceipts() {
+    if (typeof this.sendReadReceipts === 'boolean') return this.sendReadReceipts;
+
+    const settings = getSettings();
+    if (settings === null) return true;
+    if (typeof settings.sendReadReceipts === 'undefined') return true;
+    return settings.sendReadReceipts;
+  }
+
   setter(action) {
     const actions = {
       [cons.actions.settings.TOGGLE_SYSTEM_THEME]: () => {
@@ -185,6 +195,11 @@ class Settings extends EventEmitter {
         this.isNotificationSounds = !this.isNotificationSounds;
         setSettings('isNotificationSounds', this.isNotificationSounds);
         this.emit(cons.events.settings.NOTIFICATION_SOUNDS_TOGGLED, this.isNotificationSounds);
+      },
+      [cons.actions.settings.TOGGLE_READ_RECEIPTS]: () => {
+        this.sendReadReceipts = !this.sendReadReceipts;
+        setSettings('sendReadReceipts', this.sendReadReceipts);
+        this.emit(cons.events.settings.READ_RECEIPTS_TOGGLED, this.sendReadReceipts);
       },
     };
 
