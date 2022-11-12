@@ -6,7 +6,8 @@ import cons from '../../../client/state/cons';
 import settings from '../../../client/state/settings';
 import navigation from '../../../client/state/navigation';
 import {
-  toggleSystemTheme, toggleMarkdown, toggleMembershipEvents, toggleNickAvatarEvents,
+  toggleSystemTheme, toggleMarkdown, toggleGreentext,
+  toggleMembershipEvents, toggleNickAvatarEvents,
   toggleNotifications, toggleNotificationSounds, toggleReadReceipts,
 } from '../../../client/action/settings';
 import { usePermission } from '../../hooks/usePermission';
@@ -96,6 +97,23 @@ function AppearanceSection() {
             />
           )}
           content={<Text variant="b3">Format messages with markdown syntax before sending.</Text>}
+        />
+        <SettingTile
+          title="Greentext"
+          options={(
+            <Toggle
+              isActive={settings.isGreentext}
+              onToggle={() => { toggleGreentext(); updateState({}); }}
+            />
+          )}
+          content={(
+            <Text variant="b3">
+              Format lines starting from &gt; as greentext instead of quotes,
+              unless the arrow is followed by a space.
+              <br />
+              Markdown formatting has to be enabled.
+            </Text>
+          )}
         />
         <SettingTile
           title="Hide membership events"
