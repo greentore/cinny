@@ -7,7 +7,7 @@ import settings from '../../../client/state/settings';
 import navigation from '../../../client/state/navigation';
 import {
   toggleSystemTheme, toggleMarkdown, toggleMembershipEvents, toggleNickAvatarEvents,
-  toggleNotifications, toggleNotificationSounds,
+  toggleNotifications, toggleNotificationSounds, toggleTypingNotifications,
 } from '../../../client/action/settings';
 import { usePermission } from '../../hooks/usePermission';
 
@@ -188,6 +188,7 @@ function EmojiSection() {
 }
 
 function SecuritySection() {
+  const [, updateState] = useState({});
   return (
     <div className="settings-security">
       <div className="settings-security__card">
@@ -214,6 +215,23 @@ function SecuritySection() {
               <Text variant="b3">{'To decrypt older messages, Export E2EE room keys from Element (Settings > Security & Privacy > Encryption > Cryptography) and import them here. Imported keys are encrypted so you\'ll have to enter the password you set in order to decrypt it.'}</Text>
               <ImportE2ERoomKeys />
             </>
+          )}
+        />
+      </div>
+      <div className="settings-security__card">
+        <MenuHeader>Presence</MenuHeader>
+        <SettingTile
+          title="Send typing notifications"
+          options={(
+            <Toggle
+              isActive={settings.sendTypingNotifications}
+              onToggle={() => { toggleTypingNotifications(); updateState({}); }}
+            />
+          )}
+          content={(
+            <Text variant="b3">
+              Let other people know that you&#39;re typing.
+            </Text>
           )}
         />
       </div>
