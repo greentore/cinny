@@ -102,17 +102,20 @@ function AppearanceSection() {
           title="Greentext"
           options={(
             <Toggle
+              disabled={!settings.isMarkdown && !settings.isGreentext}
               isActive={settings.isGreentext}
               onToggle={() => { toggleGreentext(); updateState({}); }}
             />
           )}
           content={(
-            <Text variant="b3">
-              Format lines starting from &gt; as greentext instead of quotes,
-              unless the arrow is followed by a space.
-              <br />
-              Markdown formatting has to be enabled.
-            </Text>
+            <>
+              <Text variant="b3">
+                Format lines starting from &gt; as greentext instead of quotes
+                (unless the arrow is followed by a space).
+              </Text>
+              {!settings.isMarkdown
+              && <Text variant="b3">Markdown formatting has to be enabled.</Text>}
+            </>
           )}
         />
         <SettingTile
@@ -253,10 +256,17 @@ function SecuritySection() {
             />
           )}
           content={(
-            <Text variant="b3">
-              Decides whether read receipts should be shared with other users.
-              Making read receipts private requires a compatible homeserver.
-            </Text>
+            <>
+              <Text variant="b3">
+                Let other people know what messages you read.
+              </Text>
+              {!capabilities.privateReadReceipts
+                && (
+                <Text variant="b3">
+                  Making your read receipts private requires a compatible homeserver.
+                </Text>
+                )}
+            </>
           )}
         />
         <SettingTile
@@ -269,7 +279,7 @@ function SecuritySection() {
           )}
           content={(
             <Text variant="b3">
-              Let other people know you&#39;re typing.
+              Let other people know that you&#39;re typing.
             </Text>
           )}
         />
