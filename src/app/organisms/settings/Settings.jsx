@@ -7,8 +7,8 @@ import settings from '../../../client/state/settings';
 import navigation from '../../../client/state/navigation';
 import {
   toggleSystemTheme, toggleMarkdown, toggleGreentext,
-  toggleMembershipEvents, toggleNickAvatarEvents,
-  toggleNotifications, toggleNotificationSounds, toggleReadReceipts,
+  toggleMembershipEvents, toggleNickAvatarEvents, toggleNotifications,
+  toggleNotificationSounds, toggleTypingNotifications, toggleReadReceipts,
 } from '../../../client/action/settings';
 import { usePermission } from '../../hooks/usePermission';
 
@@ -259,7 +259,22 @@ function SecuritySection() {
             </Text>
           )}
         />
+        <SettingTile
+          title="Send typing notifications"
+          options={(
+            <Toggle
+              isActive={settings.sendTypingNotifications}
+              onToggle={() => { toggleTypingNotifications(); updateState({}); }}
+            />
+          )}
+          content={(
+            <Text variant="b3">
+              Let other people know you&#39;re typing.
+            </Text>
+          )}
+        />
       </div>
+
     </div>
   );
 }

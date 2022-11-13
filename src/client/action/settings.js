@@ -49,6 +49,12 @@ export function toggleNotificationSounds() {
   });
 }
 
+export function toggleTypingNotifications() {
+  appDispatcher.dispatch({
+    type: cons.actions.settings.TOGGLE_TYPING_NOTIFICATIONS,
+  });
+}
+
 export function toggleReadReceipts() {
   appDispatcher.dispatch({
     type: cons.actions.settings.TOGGLE_READ_RECEIPTS,

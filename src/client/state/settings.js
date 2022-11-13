@@ -31,6 +31,7 @@ class Settings extends EventEmitter {
     this.hideNickAvatarEvents = this.getHideNickAvatarEvents();
     this._showNotifications = this.getShowNotifications();
     this.isNotificationSounds = this.getIsNotificationSounds();
+    this.sendTypingNotifications = this.getSendTypingNotifications();
     this.sendReadReceipts = this.getSendReadReceipts();
 
     this.isTouchScreenDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
@@ -158,6 +159,15 @@ class Settings extends EventEmitter {
     return settings.isNotificationSounds;
   }
 
+  getSendTypingNotifications() {
+    if (typeof this.sendTypingNotifications === 'boolean') return this.sendTypingNotifications;
+
+    const settings = getSettings();
+    if (settings === null) return true;
+    if (typeof settings.sendTypingNotifications === 'undefined') return true;
+    return settings.sendTypingNotifications;
+  }
+
   getSendReadReceipts() {
     if (typeof this.sendReadReceipts === 'boolean') return this.sendReadReceipts;
 
@@ -210,6 +220,11 @@ class Settings extends EventEmitter {
         this.isNotificationSounds = !this.isNotificationSounds;
         setSettings('isNotificationSounds', this.isNotificationSounds);
         this.emit(cons.events.settings.NOTIFICATION_SOUNDS_TOGGLED, this.isNotificationSounds);
+      },
+      [cons.actions.settings.TOGGLE_TYPING_NOTIFICATIONS]: () => {
+        this.sendTypingNotifications = !this.sendTypingNotifications;
+        setSettings('sendTypingNotifications', this.sendTypingNotifications);
+        this.emit(cons.events.settings.TYPING_NOTIFICATIONS_TOGGLED, this.sendTypingNotifications);
       },
       [cons.actions.settings.TOGGLE_READ_RECEIPTS]: () => {
         this.sendReadReceipts = !this.sendReadReceipts;

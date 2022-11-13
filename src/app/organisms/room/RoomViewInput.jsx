@@ -70,6 +70,8 @@ function RoomViewInput({
   }, []);
 
   const sendIsTyping = (isT) => {
+    if (!settings.sendTypingNotifications) return;
+
     mx.sendTyping(roomId, isT, isT ? TYPING_TIMEOUT : undefined);
     isTyping = isT;
 
