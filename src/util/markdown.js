@@ -514,7 +514,7 @@ function applyGreentextRules(_extPlainRules, extMarkdownRules) {
     return;
   }
 
-  markdownRules.greentext = {
+  extMarkdownRules.greentext = {
     order: defaultRules.blockQuote.order - 0.5,
     match: (source, state) => {
       const prevCaptureStr = state.prevCapture === null ? '' : state.prevCapture[0];
