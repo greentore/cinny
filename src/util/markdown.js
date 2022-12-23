@@ -569,7 +569,7 @@ function applyGreentextRules(_extPlainRules, extMarkdownRules) {
       return { content };
     },
     html: (node, output) =>
-      htmlTag('font', `&lt;${output(node.content)}`, { 'data-mx-color': '#789902' }),
+      htmlTag('font', `&gt;${output(node.content)}`, { 'data-mx-color': '#789902' }),
     plain: (node, output, state) => `>${output(node.content, state)}`,
   };
 
