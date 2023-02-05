@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './EmojiBoard.scss';
 
@@ -18,6 +18,7 @@ import { TWEMOJI_BASE_URL } from '../../../util/twemojify';
 import Text from '../../atoms/text/Text';
 import RawIcon from '../../atoms/system-icons/RawIcon';
 import IconButton from '../../atoms/button/IconButton';
+import Button from '../../atoms/button/Button';
 import Input from '../../atoms/input/Input';
 import ScrollView from '../../atoms/scroll/ScrollView';
 
@@ -31,6 +32,30 @@ import PhotoIC from '../../../../public/res/ic/outlined/photo.svg';
 import BulbIC from '../../../../public/res/ic/outlined/bulb.svg';
 import PeaceIC from '../../../../public/res/ic/outlined/peace.svg';
 import FlagIC from '../../../../public/res/ic/outlined/flag.svg';
+
+const TextReaction = React.memo(({ text, onSelect }) => {
+  const onClick = useCallback(() => {
+    onSelect({unicode: text})
+  }, [text, onSelect])
+
+  return (
+    <div className="emoji-group text-reaction">
+      <Text className="emoji-group__header" variant="b2" weight="bold">
+        React with:
+      </Text>
+      <div className="emoji-set">
+        {text.length <= 500 // Synapse rejects longer keys
+        ? <Button className="text-reaction__button" onClick={onClick}>{text}</Button>
+        : <Button className="text-reaction__button" disabled>Too long</Button>
+        }
+      </div>
+    </div>
+  )
+});
+TextReaction.propTypes = {
+  text: PropTypes.string,
+  onSelect: PropTypes.func,
+}
 
 const ROW_EMOJIS_COUNT = 7;
 
@@ -111,16 +136,16 @@ EmojiGroup.propTypes = {
 
 const asyncSearch = new AsyncSearch();
 asyncSearch.setup(emojis, { keys: ['shortcode'], isContain: true, limit: 40 });
-function SearchedEmoji() {
+function SearchedEmoji({onSelect, isReaction}) {
   const [searchedEmojis, setSearchedEmojis] = useState(null);
 
-  function handleSearchEmoji(resultEmojis, term) {
+  function handleSearchEmoji(resultEmojis, term, originalTerm) {
     if (term === '' || resultEmojis.length === 0) {
       if (term === '') setSearchedEmojis(null);
-      else setSearchedEmojis({ emojis: [] });
+      else setSearchedEmojis({ text: originalTerm, emojis: [] });
       return;
     }
-    setSearchedEmojis({ emojis: resultEmojis });
+    setSearchedEmojis({ text: originalTerm, emojis: resultEmojis });
   }
 
   useEffect(() => {
@@ -133,15 +158,24 @@ function SearchedEmoji() {
   if (searchedEmojis === null) return false;
 
   return (
-    <EmojiGroup
-      key="-1"
-      name={searchedEmojis.emojis.length === 0 ? 'No search result found' : 'Search results'}
-      groupEmojis={searchedEmojis.emojis}
-    />
+    <>
+      {isReaction && <TextReaction text={searchedEmojis.text} onSelect={onSelect} />}
+      <EmojiGroup
+        key="-1"
+        name={searchedEmojis.emojis.length === 0 ? 'No search result found' : 'Search results'}
+        groupEmojis={searchedEmojis.emojis}
+      />
+    </>
   );
 }
 
-function EmojiBoard({ onSelect, searchRef }) {
+SearchedEmoji.propTypes = {
+  onSelect: PropTypes.func,
+  searchRef: PropTypes.shape({current: {value: PropTypes.string}}).isRequired,
+  isReaction: PropTypes.bool.isRequired,
+};
+
+function EmojiBoard({ onSelect, searchRef, isReaction }) {
   const scrollEmojisRef = useRef(null);
   const emojiInfo = useRef(null);
 
@@ -321,7 +355,7 @@ function EmojiBoard({ onSelect, searchRef }) {
         <div className="emoji-board__content__emojis">
           <ScrollView ref={scrollEmojisRef} autoHide>
             <div onMouseMove={hoverEmoji} onClick={selectEmoji}>
-              <SearchedEmoji />
+              <SearchedEmoji onSelect={onSelect} isReaction={isReaction} />
               {recentEmojis.length > 0 && (
                 <EmojiGroup name="Recently used" groupEmojis={recentEmojis} />
               )}
@@ -351,6 +385,7 @@ function EmojiBoard({ onSelect, searchRef }) {
 EmojiBoard.propTypes = {
   onSelect: PropTypes.func.isRequired,
   searchRef: PropTypes.shape({}).isRequired,
+  isReaction: PropTypes.bool.isRequired,
 };
 
 export default EmojiBoard;

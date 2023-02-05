@@ -12,6 +12,7 @@ class AsyncSearch extends EventEmitter {
   _reset() {
     this.dataList = null;
     this.term = null;
+    this.originalTerm = null;
     this.searchKeys = null;
     this.isContain = false;
     this.isCaseSensitive = false;
@@ -58,6 +59,7 @@ class AsyncSearch extends EventEmitter {
   search(term) {
     this._softReset();
 
+    this.originalTerm = term;
     this.term = this._normalize(term);
     if (this.term === '') {
       this._sendFindings();
@@ -128,7 +130,7 @@ class AsyncSearch extends EventEmitter {
   }
 
   _sendFindings() {
-    this.emit(this.RESULT_SENT, this.findingList, this.term);
+    this.emit(this.RESULT_SENT, this.findingList, this.term, this.originalTerm);
   }
 }
 

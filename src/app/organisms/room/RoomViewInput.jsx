@@ -410,7 +410,7 @@ function RoomViewInput({
               const cords = getEventCords(e);
               cords.x += (document.dir === 'rtl' ? -80 : 80);
               cords.y -= 250;
-              openEmojiBoard(cords, addEmoji);
+              openEmojiBoard(cords, addEmoji, false);
             }}
             tooltip="Emoji"
             src={EmojiIC}

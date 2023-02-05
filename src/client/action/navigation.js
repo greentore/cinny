@@ -116,11 +116,12 @@ export function openSettings(tabText) {
   });
 }
 
-export function openEmojiBoard(cords, requestEmojiCallback) {
+export function openEmojiBoard(cords, requestEmojiCallback, isReaction) {
   appDispatcher.dispatch({
     type: cons.actions.navigation.OPEN_EMOJIBOARD,
     cords,
     requestEmojiCallback,
+    isReaction,
   });
 }
 

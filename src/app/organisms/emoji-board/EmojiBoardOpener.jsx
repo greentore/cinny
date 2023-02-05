@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import cons from '../../../client/state/cons';
 import navigation from '../../../client/state/navigation';
@@ -12,14 +12,16 @@ let isEmojiBoardVisible = false;
 function EmojiBoardOpener() {
   const openerRef = useRef(null);
   const searchRef = useRef(null);
+  const [isReaction, setIsReaction] = useState(false);
 
-  function openEmojiBoard(cords, requestEmojiCallback) {
+  function openEmojiBoard(cords, requestEmojiCallback, _isReaction) {
     if (requestCallback !== null || isEmojiBoardVisible) {
       requestCallback = null;
       if (cords.detail === 0) openerRef.current.click();
       return;
     }
 
+    setIsReaction(_isReaction);
     openerRef.current.style.transform = `translate(${cords.x}px, ${cords.y}px)`;
     requestCallback = requestEmojiCallback;
     openerRef.current.click();
@@ -50,7 +52,7 @@ function EmojiBoardOpener() {
   return (
     <ContextMenu
       content={(
-        <EmojiBoard onSelect={addEmoji} searchRef={searchRef} />
+        <EmojiBoard onSelect={addEmoji} searchRef={searchRef} isReaction={isReaction} />
       )}
       afterToggle={afterEmojiBoardToggle}
       render={(toggleMenu) => (
