@@ -111,7 +111,7 @@ EmojiGroup.propTypes = {
 
 const asyncSearch = new AsyncSearch();
 asyncSearch.setup(emojis, { keys: ['shortcode'], isContain: true, limit: 40 });
-function SearchedEmoji() {
+function SearchedEmoji({availableEmojis}) {
   const [searchedEmojis, setSearchedEmojis] = useState(null);
 
   function handleSearchEmoji(resultEmojis, term) {
@@ -130,6 +130,12 @@ function SearchedEmoji() {
     };
   }, []);
 
+  useEffect(() => {
+    const customEmojis = availableEmojis.flatMap((pack) => pack.getEmojis());
+    const allEmojis = emojis.concat(customEmojis);
+    asyncSearch.setup(allEmojis, { keys: ['shortcode'], isContain: true, limit: 40 });
+  }, [availableEmojis])
+
   if (searchedEmojis === null) return false;
 
   return (
@@ -140,6 +146,10 @@ function SearchedEmoji() {
     />
   );
 }
+
+SearchedEmoji.propTypes = {
+  availableEmojis: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
 
 function EmojiBoard({ onSelect, searchRef }) {
   const scrollEmojisRef = useRef(null);
@@ -321,7 +331,7 @@ function EmojiBoard({ onSelect, searchRef }) {
         <div className="emoji-board__content__emojis">
           <ScrollView ref={scrollEmojisRef} autoHide>
             <div onMouseMove={hoverEmoji} onClick={selectEmoji}>
-              <SearchedEmoji />
+              <SearchedEmoji availableEmojis={availableEmojis} />
               {recentEmojis.length > 0 && (
                 <EmojiGroup name="Recently used" groupEmojis={recentEmojis} />
               )}
