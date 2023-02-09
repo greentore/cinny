@@ -19,7 +19,7 @@ const cons = {
     'm.room.member',
     'm.sticker',
   ],
-  supportedReceiptTypes: [
+  supportReceiptTypes: [
     'm.read',
     'm.read.private',
   ],

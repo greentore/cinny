@@ -389,11 +389,10 @@ class Notifications extends EventEmitter {
 
       Object.keys(content).forEach((eventId) => {
         Object.entries(content[eventId]).forEach(([receiptType, receipt]) => {
-          if (cons.supportedReceiptTypes.includes(receiptType)) {
-            if (Object.keys(receipt || {}).includes(userId)) {
-              this.deleteNoti(room.roomId);
-              this._deletePopupRoomNotis(room.roomId);
-            }
+          if (!cons.supportReceiptTypes.includes(receiptType)) return;
+          if (Object.keys(receipt || {}).includes(userId)) {
+            this.deleteNoti(room.roomId);
+            this._deletePopupRoomNotis(room.roomId);
           }
         });
       });
