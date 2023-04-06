@@ -12,6 +12,9 @@ async function redactEvent(roomId, eventId, reason) {
 }
 
 async function sendReaction(roomId, toEventId, reaction, shortcode) {
+  if (reaction.length > 500) {
+    throw new Error('Aggregation key is too long');
+  }
   const mx = initMatrix.matrixClient;
   const content = {
     'm.relates_to': {
