@@ -111,7 +111,7 @@ EmojiGroup.propTypes = {
 
 const asyncSearch = new AsyncSearch();
 asyncSearch.setup(emojis, { keys: ['shortcode'], isContain: true, limit: 40 });
-function SearchedEmoji({availableEmojis}) {
+function SearchedEmoji() {
   const [searchedEmojis, setSearchedEmojis] = useState(null);
 
   function handleSearchEmoji(resultEmojis, term) {
@@ -130,12 +130,6 @@ function SearchedEmoji({availableEmojis}) {
     };
   }, []);
 
-  useEffect(() => {
-    const customEmojis = availableEmojis.flatMap((pack) => pack.getEmojis());
-    const allEmojis = emojis.concat(customEmojis);
-    asyncSearch.setup(allEmojis, { keys: ['shortcode'], isContain: true, limit: 40 });
-  }, [availableEmojis])
-
   if (searchedEmojis === null) return false;
 
   return (
@@ -146,10 +140,6 @@ function SearchedEmoji({availableEmojis}) {
     />
   );
 }
-
-SearchedEmoji.propTypes = {
-  availableEmojis: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-};
 
 function EmojiBoard({ onSelect, searchRef }) {
   const scrollEmojisRef = useRef(null);
@@ -243,6 +233,10 @@ function EmojiBoard({ onSelect, searchRef }) {
           packs[i].packIndex = i;
         }
         setAvailableEmojis(packs);
+
+        const customEmojis = packs.flatMap((pack) => pack.getEmojis());
+        const allEmojis = emojis.concat(customEmojis);
+        asyncSearch.setup(allEmojis, { keys: ['shortcode'], isContain: true, limit: 40 });
       }
     };
 
@@ -331,7 +325,7 @@ function EmojiBoard({ onSelect, searchRef }) {
         <div className="emoji-board__content__emojis">
           <ScrollView ref={scrollEmojisRef} autoHide>
             <div onMouseMove={hoverEmoji} onClick={selectEmoji}>
-              <SearchedEmoji availableEmojis={availableEmojis} />
+              <SearchedEmoji/>
               {recentEmojis.length > 0 && (
                 <EmojiGroup name="Recently used" groupEmojis={recentEmojis} />
               )}
