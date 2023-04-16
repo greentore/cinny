@@ -38,7 +38,7 @@ function mathHtml(wrap, node) {
   });
 }
 
-const emojiRegex = /^:([\w-]+):/;
+const emojiRegex = /^:([^:]+):/;
 
 const plainRules = {
   Array: {
