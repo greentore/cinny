@@ -136,7 +136,7 @@ EmojiGroup.propTypes = {
 
 const asyncSearch = new AsyncSearch();
 asyncSearch.setup(emojis, { keys: ['shortcode'], isContain: true, limit: 40 });
-function SearchedEmoji({onSelect, isReaction, availableEmojis,}) {
+function SearchedEmoji({onSelect, isReaction}) {
   const [searchedEmojis, setSearchedEmojis] = useState(null);
 
   function handleSearchEmoji(resultEmojis, term, originalTerm) {
@@ -155,12 +155,6 @@ function SearchedEmoji({onSelect, isReaction, availableEmojis,}) {
     };
   }, []);
 
-  useEffect(() => {
-    const customEmojis = availableEmojis.flatMap((pack) => pack.getEmojis());
-    const allEmojis = emojis.concat(customEmojis);
-    asyncSearch.setup(allEmojis, { keys: ['shortcode'], isContain: true, limit: 40 });
-  }, [availableEmojis])
-
   if (searchedEmojis === null) return false;
 
   return (
@@ -176,12 +170,7 @@ function SearchedEmoji({onSelect, isReaction, availableEmojis,}) {
 }
 
 SearchedEmoji.propTypes = {
-  availableEmojis: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-};
-
-SearchedEmoji.propTypes = {
-  onSelect: PropTypes.func,
-  searchRef: PropTypes.shape({current: {value: PropTypes.string}}).isRequired,
+  onSelect: PropTypes.func.isRequired,
   isReaction: PropTypes.bool.isRequired,
 };
 
@@ -277,6 +266,10 @@ function EmojiBoard({ onSelect, searchRef, isReaction }) {
           packs[i].packIndex = i;
         }
         setAvailableEmojis(packs);
+
+        const customEmojis = packs.flatMap((pack) => pack.getEmojis());
+        const allEmojis = emojis.concat(customEmojis);
+        asyncSearch.setup(allEmojis, { keys: ['shortcode'], isContain: true, limit: 40 });
       }
     };
 
@@ -365,7 +358,7 @@ function EmojiBoard({ onSelect, searchRef, isReaction }) {
         <div className="emoji-board__content__emojis">
           <ScrollView ref={scrollEmojisRef} autoHide>
             <div onMouseMove={hoverEmoji} onClick={selectEmoji}>
-              <SearchedEmoji onSelect={onSelect} isReaction={isReaction} availableEmojis={availableEmojis} />
+              <SearchedEmoji onSelect={onSelect} isReaction={isReaction} />
               {recentEmojis.length > 0 && (
                 <EmojiGroup name="Recently used" groupEmojis={recentEmojis} />
               )}
