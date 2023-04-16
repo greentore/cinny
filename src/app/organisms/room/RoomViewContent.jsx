@@ -337,7 +337,7 @@ function useEventArrive(roomTimeline, readUptoEvtStore, timelineScrollRef, event
       const isUnread = readUpToEvent ? readUpToEvent?.getId() === readUpToId : true;
 
       if (isUnread === false) {
-        if (document.visibilityState === 'visible' && timelineScroll.bottom < 16) {
+        if (document.hasFocus() && timelineScroll.bottom < 16) {
           requestAnimationFrame(() => markAsRead(roomTimeline.roomId));
         } else {
           readUptoEvtStore.setItem(roomTimeline.findEventByIdInTimelineSet(readUpToId));
