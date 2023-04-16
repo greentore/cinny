@@ -8,7 +8,7 @@
   display: flex;
 
   & > .scrollbar {
-    width: initial;    
+    width: initial;
     height: var(--sticker-board-height);
   }
 
@@ -25,13 +25,14 @@
     min-width: 0;
     width: var(--sticker-board-width);
     display: flex;
+    flex-direction: column;
   }
 
   &__content {
     min-height: 100%;
   }
 
-  &__pack {
+  &__group {
     margin-bottom: var(--sp-normal);
     position: relative;
 
@@ -40,7 +41,7 @@
       top: 0;
       z-index: 99;
       background-color: var(--bg-surface);
-  
+
       @include dir.side(margin, var(--sp-extra-tight), 0);
       padding: var(--sp-extra-tight) var(--sp-ultra-tight);
       text-transform: uppercase;
@@ -55,7 +56,7 @@
       gap: var(--sp-normal) var(--sp-tight);
 
       img {
-        width: 76px;  
+        width: 76px;
         height: 76px;
         object-fit: contain;
         cursor: pointer;
@@ -70,5 +71,27 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+  }
+
+  &__search {
+    padding: var(--sp-extra-tight);
+    position: relative;
+
+    & .ic-raw {
+      position: absolute;
+      @include dir.prop(left, var(--sp-normal), unset);
+      @include dir.prop(right, unset, var(--sp-normal));
+      top: var(--sp-normal);
+      transform: translateY(1px);
+    }
+
+    & .input-container {
+      & .input {
+        min-width: 100%;
+        width: 0;
+        padding: var(--sp-extra-tight) 36px;
+        border-radius: calc(var(--bo-radius) / 2);
+      }
+    }
   }
 }
