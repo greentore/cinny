@@ -347,7 +347,7 @@ function useEventArrive(roomTimeline, readUptoEvtStore, timelineScrollRef, event
 
       const { timeline } = roomTimeline;
       const unreadMsgIsLast = timeline[timeline.length - 2].getId() === readUpToId;
-      if (unreadMsgIsLast) {
+      if (document.hasFocus() && unreadMsgIsLast) {
         requestAnimationFrame(() => markAsRead(roomTimeline.roomId));
       }
     };
