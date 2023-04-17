@@ -500,6 +500,21 @@ function RoomViewContent({ roomInputRef, eventId, roomTimeline }) {
     useCallback(() => roomInputRef.current, [roomInputRef]),
   );
   
+  // Dismiss pending notifications on focus
+  const onFocus = useCallback(() => {
+    const timelineScroll = timelineScrollRef.current;
+    if (timelineScroll.bottom < 16) {
+      requestAnimationFrame(() => markAsRead(roomTimeline.roomId))
+    }
+  }, [roomTimeline])
+
+  useEffect(() => {
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [onFocus]);
+
   const listenKeyboard = useCallback((event) => {
     if (event.ctrlKey || event.altKey || event.metaKey) return;
     if (event.key !== 'ArrowUp') return;
