@@ -7,20 +7,6 @@ export function bytesToSize(bytes) {
   return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`;
 }
 
-export function diffMinutes(dt2, dt1) {
-  let diff = (dt2.getTime() - dt1.getTime()) / 1000;
-  diff /= 60;
-  return Math.abs(Math.round(diff));
-}
-
-export function isInSameDay(dt2, dt1) {
-  return (
-    dt2.getFullYear() === dt1.getFullYear()
-    && dt2.getMonth() === dt1.getMonth()
-    && dt2.getDate() === dt1.getDate()
-  );
-}
-
 /**
  * @param {Event} ev
  * @param {string} [targetSelector] element selector for Element.matches([selector])

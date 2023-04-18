@@ -60,3 +60,9 @@ export function toggleReadReceipts() {
     type: cons.actions.settings.TOGGLE_READ_RECEIPTS,
   });
 }
+
+export function toggleTime12() {
+  appDispatcher.dispatch({
+    type: cons.actions.settings.TOGGLE_TIME12,
+  });
+}

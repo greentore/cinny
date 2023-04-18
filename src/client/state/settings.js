@@ -177,6 +177,15 @@ class Settings extends EventEmitter {
     return settings.sendReadReceipts;
   }
 
+  getIsTime12() {
+    if (typeof this.isTime12 === 'boolean') return this.isTime12;
+
+    const settings = getSettings();
+    if (settings === null) return false;
+    if (typeof settings.isTime12 === 'undefined') return true;
+    return settings.isTime12;
+  }
+
   setter(action) {
     const actions = {
       [cons.actions.settings.TOGGLE_SYSTEM_THEME]: () => {
@@ -230,6 +239,11 @@ class Settings extends EventEmitter {
         this.sendReadReceipts = !this.sendReadReceipts;
         setSettings('sendReadReceipts', this.sendReadReceipts);
         this.emit(cons.events.settings.READ_RECEIPTS_TOGGLED, this.sendReadReceipts);
+      },
+      [cons.actions.settings.TOGGLE_TIME12]: () => {
+        this.isTime12 = !this.isTime12;
+        setSettings('isTime12', this.isTime12);
+        this.emit(cons.events.settings.TIME12_TOGGLED, this.isTime12);
       },
     };
 
