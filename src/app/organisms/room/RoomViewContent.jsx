@@ -347,7 +347,7 @@ function useEventArrive(roomTimeline, readUptoEvtStore, timelineScrollRef, event
 
       const { timeline } = roomTimeline;
       const unreadMsgIsLast = timeline[timeline.length - 2].getId() === readUpToId;
-      if (unreadMsgIsLast) {
+      if (document.hasFocus() && unreadMsgIsLast) {
         requestAnimationFrame(() => markAsRead(roomTimeline.roomId));
       }
     };
@@ -482,6 +482,21 @@ function RoomViewContent({ eventId, roomTimeline }) {
       timelineScroll.tryRestoringScroll();
     }
   }, [newEvent]);
+
+  // Dismiss pending notifications on focus
+  const onFocus = useCallback(() => {
+    const timelineScroll = timelineScrollRef.current;
+    if (timelineScroll.bottom < 16) {
+      requestAnimationFrame(() => markAsRead(roomTimeline.roomId))
+    }
+  }, [roomTimeline])
+
+  useEffect(() => {
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [onFocus]);
 
   const listenKeyboard = useCallback((event) => {
     if (event.ctrlKey || event.altKey || event.metaKey) return;
