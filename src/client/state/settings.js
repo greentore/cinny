@@ -147,6 +147,15 @@ class Settings extends EventEmitter {
     return settings.isNotificationSounds;
   }
 
+  getIsTime12() {
+    if (typeof this.isTime12 === 'boolean') return this.isTime12;
+
+    const settings = getSettings();
+    if (settings === null) return false;
+    if (typeof settings.isTime12 === 'undefined') return true;
+    return settings.isTime12;
+  }
+
   setter(action) {
     const actions = {
       [cons.actions.settings.TOGGLE_SYSTEM_THEME]: () => {
@@ -185,6 +194,11 @@ class Settings extends EventEmitter {
         this.isNotificationSounds = !this.isNotificationSounds;
         setSettings('isNotificationSounds', this.isNotificationSounds);
         this.emit(cons.events.settings.NOTIFICATION_SOUNDS_TOGGLED, this.isNotificationSounds);
+      },
+      [cons.actions.settings.TOGGLE_TIME12]: () => {
+        this.isTime12 = !this.isTime12;
+        setSettings('isTime12', this.isTime12);
+        this.emit(cons.events.settings.TIME12_TOGGLED, this.isTime12);
       },
     };
 
