@@ -33,6 +33,7 @@ class Settings extends EventEmitter {
     this.isNotificationSounds = this.getIsNotificationSounds();
     this.sendTypingNotifications = this.getSendTypingNotifications();
     this.sendReadReceipts = this.getSendReadReceipts();
+    this.isTime12 = this.getIsTime12();
 
     this.isTouchScreenDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
   }
@@ -182,7 +183,7 @@ class Settings extends EventEmitter {
 
     const settings = getSettings();
     if (settings === null) return false;
-    if (typeof settings.isTime12 === 'undefined') return true;
+    if (typeof settings.isTime12 === 'undefined') return false;
     return settings.isTime12;
   }
 
