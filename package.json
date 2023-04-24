@@ -1,6 +1,6 @@
 {
-  "name": "cinny",
-  "version": "2.2.6",
+  "name": "greeny",
+  "version": "2.2.6g3",
   "description": "Yet another matrix client",
   "main": "index.js",
   "engines": {
@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
-  "author": "Ajay Bura",
+  "author": "greentore",
   "license": "AGPL-3.0-only",
   "dependencies": {
     "@fontsource/inter": "4.5.14",
