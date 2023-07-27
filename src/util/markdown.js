@@ -38,7 +38,7 @@ function mathHtml(wrap, node) {
   });
 }
 
-const emojiRegex = /^:([^:]+):/;
+const emojiRegex = /^:([^:\n]+):/;
 
 const plainRules = {
   Array: {
@@ -72,7 +72,7 @@ const plainRules = {
       if (!state.inline) return null;
       const capture = emojiRegex.exec(source);
       if (!capture) return null;
-      const emoji = state.emojis.get(capture[1]);
+      const emoji = state.emojis?.get(capture[1]);
       if (emoji) return capture;
       return null;
     },
